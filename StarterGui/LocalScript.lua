@@ -1,21 +1,31 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage");
-local Remote = ReplicatedStorage:WaitForChild("CoinPopupEvent");
+local RunService = game:GetService("RunService");
 
-local Sample = script.Sample;
+script.Parent.Parent:GetPropertyChangedSignal("Enabled"):Wait();
 
-Remote.OnClientEvent:Connect(function(Amount : number)
-	Amount = tostring(Amount);
+local Time = 0;
+
+local function SecondsToMinutes()
+	local Seconds = math.round(Time % 60);
+	local Minutes = Time // 60;
 	
-	local Popup = Sample:Clone();
-	Popup.Parent = script.Parent;
+	if Seconds < 10 then
+		Seconds = `0{Seconds}`;
+	else
+		Seconds = tostring(Seconds);
+	end
 	
-	Popup.TextLabel.Text = `+${Amount}`
+	if Minutes < 10 then
+		Minutes = `0{Minutes}`;
+	else
+		Minutes = tostring(Minutes);
+	end
 	
-	Popup.Position = UDim2.new(math.random(), 0, math.random(), 0);
-	
-	local Time = 2 * math.abs(Popup.Position.Y.Scale, -1.2);
-	
-	Popup:TweenPosition(
-		UDim2.new(Popup.Position.X.Scale, 0, Popup.Position.Y.Scale - 1.2, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, Time
-	);
-end)
+	script.Parent.Text = `{Minutes}:{Seconds}`;
+end
+
+local function OnHeartBeat(DeltaTime)
+	Time = Time + DeltaTime;
+	SecondsToMinutes()
+end
+
+RunService.Heartbeat:Connect(OnHeartBeat) 
