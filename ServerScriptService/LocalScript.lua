@@ -1,8 +1,13 @@
-local Player = game.Players.LocalPlayer;
-local Leaderstats = Player:WaitForChild("leaderstats");
+local ReplicatedStorage = game:GetService("ReplicatedStorage");
+local TPRemote = ReplicatedStorage:WaitForChild("TeleportRemote");
 
-script.Parent.Text = `${Leaderstats.Coins.Value}`
+local Debounce = os.clock() - 30;
 
-Leaderstats.Coins.Changed:Connect(function()
-	script.Parent.Text = `${Leaderstats.Coins.Value}`
+script.Parent.Activated:Connect(function()
+	if os.clock() - Debounce < 30 then
+		return	
+	end
+	
+	Debounce = os.clock();
+	TPRemote:FireServer(18536859031, true);
 end)
